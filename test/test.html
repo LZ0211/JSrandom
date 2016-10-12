@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>Document</title>
+ </head>
+ <body>
+  <script type="text/javascript" src="../random.js"></script>
+  <script type="text/javascript">
+    function repeat(char,number){
+        return new Array(number+1).join(char);
+    }
+
+    function draw(x,y,fn){
+      var list = {};
+      var scaleX = 1/x;
+      for (var i=0;i<50000 ;i++ ){
+        var num = (Math.ceil(fn() * scaleX) / scaleX).toFixed(2);
+        list[num] = (list[num] || 0) + 1;
+      }
+      var keys = Object.keys(list).sort((x,y)=>x-y);
+      var values = keys.map(x=>Math.floor(list[x] * y)).filter(x=>x>0);
+      var Max = Math.max.apply(Math,values);
+      for (var i=Max;i>0;i-- ){
+        document.write(values.map(x=>x < i ? "~" : "*").join(""));
+        document.write("<br>");
+      }
+      document.write("<br>");
+    }
+    document.write("TEST Uniform(0,2)");
+    document.write("<br>");
+    draw(0.01,0.1,new JSrandom.Uniform(0,2));
+
+    document.write("TEST Gaussian(5,3)");
+    document.write("<br>");
+    draw(0.1,0.02,new JSrandom.Gaussian(5,3));
+
+    document.write("TEST Cauchy(0,1)");
+    document.write("<br>");
+    draw(0.1,0.02,new JSrandom.Cauchy(0,1));
+
+
+    document.write("TEST Exponential(3)");
+    document.write("<br>");
+    draw(0.01,0.02,new JSrandom.Exponential(3));
+
+    document.write("TEST Geometric(0.2)");
+    document.write("<br>");
+    draw(0.01,0.002,new JSrandom.Geometric(0.2));
+
+    document.write("TEST Weibull(2,4)");
+    document.write("<br>");
+    draw(0.05,0.05,new JSrandom.Weibull(2,4));
+
+  </script>
+ </body>
+</html>
