@@ -1,5 +1,4 @@
-
-(function (){
+(function (root){
     //This random generator use MT19937
     //generate a random seed for Mersenne twister algorithm.
     var SEED = Math.random() * new Date();
@@ -271,39 +270,40 @@
         }
     }
 
-    var JSrandom = {
+    var Random = {
         randFloat:randFloat,
         randInt:randInt,
         select:select,
         choice:choice,
         sample:sample,
-        uuid:uuid,
-        range:range,
         shuffle:shuffle,
         Uniform:Uniform,
         Gaussian:Gaussian,
         Bernoulli:Bernoulli,
         Cauchy:Cauchy,
-        Poisson:Poisson,
+        //Poisson:Poisson,
         Exponential:Exponential,
         Geometric:Geometric,
         Binomial:Binomial,
         Weibull:Weibull
     };
 
-    if (typeof module == "object" && typeof module.exports == "object"){
-        //nodejs
-        module.exports = JSrandom;
+    if (typeof define === "function" && define.amd) {
+        define(function () {
+            return Random;
+        });
+    }else if(typeof module !== "undefined" && typeof require === "function") {
+        module.exports = Random;
     }else {
-        //brower
-        if (typeof define == "function"){
-            define("JSrandom",function (require, exports, module){
-                module.exports = JSrandom;
-            });
-        }else {
-            window.JSrandom = JSrandom;
-        }
+        (function () {
+          var oldGlobal = root.Random;;
+          Random.noConflict = function () {
+            root.Random = oldGlobal;
+            return this;
+          };
+        })();
+        root.Random = Random;
     }
-})()
+})(this)
 
 

@@ -1,14 +1,13 @@
 {
-  "name": "JSrandom",
+  "name": "jsrand",
   "version": "0.0.1",
   "description": "A random module for JavaScript",
-  "author": {
-    "name": "LZ0211",
-    "email": "1491097321@QQ.com"
-  },
+  "author": "LZ0211 <1491097321@QQ.com>",
   "license": "MIT",
   "keywords": [
     "Random",
+    "Uniform",
+    "Gsussian",
     "randInt",
     "randFloat"
   ],
@@ -23,5 +22,11 @@
   "bugs": {
     "url": "https://github.com/LZ0211/JSrandom/issues"
   },
-  "homepage": "https://github.com/LZ0211/JSrandom"
+  "homepage": "https://github.com/LZ0211/JSrandom",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node ./test/test"
+  }
 }
