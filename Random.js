@@ -254,22 +254,19 @@
         }
     }
 
-    function Gamma(){
+    function Gamma(alph,beta){
     }
 
     function chiSquared(freedomDegree){
     }
 
-    function Poisson(lamda){
-        lamda = lamda||20;
-        var c=Math.exp(-lamda);
+    function Poisson(mean){
+        var c = Math.exp(-mean);
         return function (){
             var x=0,b=1;
-            do {  
+            do {
+                x += 1;
                 b *= uniform();
-                if(b >= c){
-                    x += 1;
-                }
             }
             while(b>=c);
             return x;
@@ -278,7 +275,7 @@
 
     function Exponential(lamda){
         return function (){
-            return -1/lamda*Math.log(uniform());
+            return -Math.log(uniform())/lamda;
         }
     }
 
@@ -307,7 +304,7 @@
         Gaussian:Gaussian,
         Bernoulli:Bernoulli,
         Cauchy:Cauchy,
-        //Poisson:Poisson,
+        Poisson:Poisson,
         Exponential:Exponential,
         Geometric:Geometric,
         Binomial:Binomial,
