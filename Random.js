@@ -62,6 +62,32 @@
         return parseInt(randFloat.apply(null,arguments));
     }
 
+    function Int32(){
+        return msRand();
+    }
+
+    function toHex(number){
+        return number.toString(16);
+    }
+
+    function hex(){
+        return toHex(randInt(0,16));
+    }
+
+    function color(){
+        return [randInt(0,256),randInt(0,256),randInt(0,256)];
+    }
+
+    function leftpad(str,len,char){
+        len = len || 4;
+        char = char || "0";
+        return new Array(len + 1 - str.length).join(char) + str;
+    }
+
+    function colorHex(){
+        return "#" + color().map(toHex).map(v=>leftpad(v,2,0)).join("");
+    }
+
     function select(list,fn){
         fn = fn || uniform;
         var randNum = Math.abs(fn());
@@ -270,7 +296,7 @@
         }
     }
 
-    var Random = {
+    var JSrandom = {
         randFloat:randFloat,
         randInt:randInt,
         select:select,
@@ -290,19 +316,19 @@
 
     if (typeof define === "function" && define.amd) {
         define(function () {
-            return Random;
+            return JSrandom;
         });
     }else if(typeof module !== "undefined" && typeof require === "function") {
-        module.exports = Random;
+        module.exports = JSrandom;
     }else {
         (function () {
-          var oldGlobal = root.Random;;
-          Random.noConflict = function () {
-            root.Random = oldGlobal;
-            return this;
-          };
+            var oldGlobal = root.JSrandom;
+            JSrandom.noConflict = function () {
+                root.JSrandom = oldGlobal;
+                return this;
+            };
         })();
-        root.Random = Random;
+        root.JSrandom = JSrandom;
     }
 })(this)
 
