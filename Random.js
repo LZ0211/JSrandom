@@ -181,11 +181,15 @@
     }
 
     function Gaussian(mu,sigma){
-        mu = mu || 0;
-        sigma = sigma || 1;
-        sigma = Math.abs(sigma);
         return function (){
             return normal()*Math.sqrt(sigma)+mu;
+        }
+    }
+
+    function Lognormal(mu,sigma){
+        var generator = Gaussian(mu,sigma);
+        return function (){
+            return Math.exp(generator());
         }
     }
 
@@ -231,33 +235,77 @@
     })()
 
     function Binomial(up,prob){
-        var probs = [];
-        for (var i=0;i<=up ;i++ ){
-            probs[i] = factorial(up) / factorial(up-i) / factorial(i) * Math.pow(prob,i) * Math.pow(1-prob,up-i);
-        }
-        for (var i=1;i<=up ;i++ ){
-            probs[i] = probs[i] + probs[i-1];
-        }
+        var generator = Bernoulli(prob);
         return function (){
-            var num = uniform();
-            for (var i=0;i<=up ;i++ ){
-                if (probs[i] > num){
-                    return i;
+            var x = 0;
+            for (var i=0;i<up ;i++ ){
+                if (generator()){
+                    x += 1;
                 }
             }
+            return x;
+        }
+    }
+
+    function negativeBinomial(times,prob){
+        var generator = new Bernoulli(prob);
+        return function (){
+            var success=0,fail=0;
+            do{
+                if (generator()){
+                    success += 1;
+                }else {
+                    fail += 1;
+                }
+            }
+            while (fail<times);
+            return success;
         }
     }
 
     function Cauchy(location,scale){
         return function (){
-            return Math.tan((uniform() - 0.5) * Math.PI) * scale + location;
+            return Math.tan(uniform() * Math.PI) * scale + location;
         }
     }
 
-    function Gamma(alph,beta){
+    function Gumbel(location,scale){
+        return function (){
+            return -Math.log(Math.log(1/uniform())) * scale + location;
+        }
     }
 
-    function chiSquared(freedomDegree){
+    function Logistic(location,scale){
+        return function (){
+            return -Math.log(1/uniform() - 1) * scale + location;
+        }
+    }
+
+    /*
+    Marsaglia and Tsang (2001).
+    */
+    function Gamma(shape,scale){
+        return function (){
+            var d = shape - 1 / 3;
+            var c = 1 / Math.sqrt(9 * d);
+            do {
+                do {
+                    var x = gaussian();
+                    var v = Math.pow(c * x + 1, 3);
+                } while (v <= 0);
+                var u = uniform();
+                var x2 = Math.pow(x, 2);
+            } while (u >= 1 - 0.0331 * x2 * x2 && Math.log(u) >= 0.5 * x2 + d * (1 - v + Math.log(v)));
+            if (shape < 1) {
+                return scale * d * v * Math.exp(exponential() / -shape);
+            } else {
+                return scale * d * v;
+            }
+        }
+    }
+
+    function Chisquared(degree){
+        return Gamma(degree/2,2);
     }
 
     function Poisson(mean){
@@ -282,15 +330,129 @@
     function Geometric(prob){
         var temp = Math.log(1-prob);
         return function (){
-            return Math.ceil(Math.log(1-uniform())/temp) - 1;
+            return Math.ceil(Math.log(uniform())/temp) - 1;
         }
     }
 
     function Weibull(shape,scale){
         var temp = -Math.pow(scale,shape);
         return function (){
-            return Math.exp(Math.log(temp*Math.log(1-uniform())) / shape);
+            return Math.pow(temp*Math.log(uniform()),1/shape);
         }
+    }
+
+    function Rayleigh(scale){
+        return Weibull(2,scale);
+    }
+
+    function gaussian(mu,sigma){
+        if (undefined == mu){
+            mu = 0;
+            sigma = 1;
+        }
+        if (undefined == sigma){
+            sigma = 1;
+        }
+        return Gaussian(mu,sigma)();
+    }
+
+    function lognormal(mu,sigma){
+        if (undefined == mu){
+            mu = 0;
+            sigma = 1;
+        }
+        if (undefined == sigma){
+            sigma = 1;
+        }
+        return Lognormal(mu,sigma)();
+    }
+
+    function bernoulli(prob){
+        if (undefined == prob){
+            prob = 0.5;
+        }
+        return Bernoulli(prob)();
+    }
+
+    function cauchy(location,scale){
+        if (undefined == location){
+            location = 0;
+            scale = 1;
+        }
+        if (undefined == scale){
+            scale = 1;
+        }
+        return Cauchy(location,scale)();
+    }
+
+    function gumbel(location,scale){
+        if (undefined == location){
+            location = 0;
+            scale = 1;
+        }
+        if (undefined == scale){
+            scale = 1;
+        }
+        return Gumbel(location,scale)();
+    }
+
+    function logistic(location,scale){
+        if (undefined == location){
+            location = 0;
+            scale = 1;
+        }
+        if (undefined == scale){
+            scale = 1;
+        }
+        return Logistic(location,scale)();
+    }
+
+    function poisson(mean){
+        mean = mean || 1;
+        return Poisson(mean)();
+    }
+
+    function gamma(shape,scale){
+        if (undefined == shape){
+            shape = 1;
+            scale = 1;
+        }
+        if (undefined == scale){
+            scale = 1;
+        }
+        return Gamma(shape,scale)();
+    }
+
+    function chisquared(degree){
+        if (undefined == degree){
+            degree = 1;
+        }
+        return Chisquared(degree)();
+    }
+
+    function exponential(lamda){
+        lamda = lamda || 1;
+        return Exponential(lamda)();
+    }
+
+    function geometric(prob){
+        prob = prob || 0.5;
+        return Geometric(prob)();
+    }
+
+    function binomial(up,prob){
+        return Binomial(up,prob)();
+    }
+
+    function weibull(shape,scale){
+        if (undefined == shape){
+            shape = 1;
+            scale = 1;
+        }
+        if (undefined == scale){
+            scale = 1;
+        }
+        return Weibull(shape,scale)();
     }
 
     var JSrandom = {
@@ -302,13 +464,32 @@
         shuffle:shuffle,
         Uniform:Uniform,
         Gaussian:Gaussian,
+        Lognormal:Lognormal,
         Bernoulli:Bernoulli,
         Cauchy:Cauchy,
+        Gumbel:Gumbel,
+        Logistic:Logistic,
         Poisson:Poisson,
+        Gamma:Gamma,
+        Chisquared:Chisquared,
         Exponential:Exponential,
         Geometric:Geometric,
         Binomial:Binomial,
-        Weibull:Weibull
+        Weibull:Weibull,
+        uniform:uniform,
+        gaussian:gaussian,
+        lognormal:lognormal,
+        bernoulli:bernoulli,
+        cauchy:cauchy,
+        gumbel:gumbel,
+        logistic:logistic,
+        poisson:poisson,
+        gamma:gamma,
+        chisquared:chisquared,
+        exponential:exponential,
+        geometric:geometric,
+        binomial:binomial,
+        weibull:weibull
     };
 
     if (typeof define === "function" && define.amd) {

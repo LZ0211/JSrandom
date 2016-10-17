@@ -1,6 +1,6 @@
 {
-  "name": "jsrand",
-  "version": "0.0.1",
+  "name": "jsrandom",
+  "version": "0.1.1",
   "description": "A random module for JavaScript",
   "author": "LZ0211 <1491097321@QQ.com>",
   "license": "MIT",
