@@ -70,10 +70,6 @@
         return number.toString(16);
     }
 
-    function hex(){
-        return toHex(randInt(0,16));
-    }
-
     function color(){
         return [randInt(0,256),randInt(0,256),randInt(0,256)];
     }
@@ -458,6 +454,9 @@
     var JSrandom = {
         randFloat:randFloat,
         randInt:randInt,
+        Int32:Int32,
+        color:color,
+        colorHex:colorHex,
         select:select,
         choice:choice,
         sample:sample,
@@ -476,6 +475,7 @@
         Geometric:Geometric,
         Binomial:Binomial,
         Weibull:Weibull,
+        Rayleigh:Rayleigh,
         uniform:uniform,
         gaussian:gaussian,
         lognormal:lognormal,
@@ -508,6 +508,51 @@
         })();
         root.JSrandom = JSrandom;
     }
+
+
+    //functional paradigm test
+    /*function curry(fn){
+        var length = fn.length;
+        return function (){
+            var callee = arguments.callee;
+            var args = [].slice.apply(arguments);
+            var len = args.length;
+
+            if (len >= length){
+                return fn.apply(null,args);
+            }
+            return function (){
+                var _args = args.concat([].slice.apply(arguments));
+                return callee.apply(null,_args);
+            }
+        }
+    }
+
+    function compose(){
+        var args = [].slice.apply(arguments);
+        var fn = args.pop();
+        if (args.length == 0){
+            return fn;
+        }
+        return function (){
+            return compose.apply(null,args)(fn.apply(null,arguments));
+        }
+    }
+
+    var toString = function (x){
+        return x.toString();
+    }
+    var toFixed = curry(function (digit,number){
+        return number.toFixed(digit);
+    })
+
+    var between = curry(function (a,b,x){
+        return a + (b-a) * x;
+    });
+
+    var generator = compose(toFixed(5),between(1,10),uniform);
+
+    console.log(generator())*/
 })(this)
 
 
