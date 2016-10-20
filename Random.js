@@ -81,7 +81,9 @@
     }
 
     function colorHex(){
-        return "#" + color().map(toHex).map(v=>leftpad(v,2,0)).join("");
+        return "#" + color().map(toHex).map(function (v){
+            return leftpad(v,2,0);
+        }).join("");
     }
 
     function select(list,fn){
