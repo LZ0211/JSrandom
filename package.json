@@ -1,15 +1,27 @@
 {
   "name": "jsrand",
-  "version": "0.2.4",
-  "description": "A random module for JavaScript",
+  "version": "0.2.5",
+  "description": "A random module for JavaScript, generate random numbers follow different random distributions, including Uniform, Gaussian, Poisson, Exponential, Gamma, Lognormal, Cauchy, Chisquared, Binomial, Weibull and so on",
   "author": "LZ0211 <1491097321@QQ.com>",
   "license": "MIT",
   "keywords": [
     "Random",
     "Uniform",
-    "Gsussian",
+    "Gaussian",
     "randInt",
-    "randFloat"
+    "randFloat",
+    "Lognormal",
+    "Cauchy",
+    "Gumbel",
+    "Logistic",
+    "Poisson",
+    "Gamma",
+    "Chisquared",
+    "Exponential",
+    "Geometric",
+    "Binomial",
+    "Weibull",
+    "Rayleigh"
   ],
   "repository": {
     "type": "git",
