@@ -14,68 +14,67 @@
     function repeat(char,number){
         return new Array(number+1).join(char);
     }
+    function leftPad(s,l,c){
+      c = c || ' ';
+      if(s.length < l) return repeat(c,l-s.length) + s;
+      return s;
+    }
 
-    function draw(x,y,fn){
+    var write = document.write.bind(document);
+    var log = x=>write(x+'<br>');
+
+    function draw(scaleX,fn){
       var list = {};
-      var scaleX = 1/x;
-      for (var i=0;i<50000 ;i++ ){
-        var num = (Math.ceil(fn() * scaleX) / scaleX).toFixed(2);
+      for (var i=0;i<20000 ;i++ ){
+        var num = parseInt(scaleX * fn());
         list[num] = (list[num] || 0) + 1;
       }
-      var keys = Object.keys(list).sort((x,y)=>x-y);
-      var values = keys.map(x=>Math.floor(list[x] * y)).filter(x=>x>0);
-      var Max = Math.max.apply(Math,values);
-      for (var i=Max;i>0;i-- ){
-        document.write(values.map(x=>x < i ? "~" : "*").join(""));
-        document.write("<br>");
-      }
-      document.write("<br>");
+      Object.keys(list).sort((x,y)=>x-y).filter(x=>list[x]>=50).forEach(function (k){
+        log(leftPad((k/scaleX).toFixed(2),5,'&nbsp;') + ":&nbsp;" + repeat("*",Math.round(list[k]/100)));
+      });
     }
-    document.write("TEST Uniform(0,2)");
-    document.write("<br>");
-    draw(0.01,0.1,new JSrandom.Uniform(0,2));
-
-    document.write("TEST Gaussian(5,3)");
-    document.write("<br>");
-    draw(0.1,0.02,new JSrandom.Gaussian(5,3));
-
-    document.write("TEST Lognormal(0,1)");
-    document.write("<br>");
-    draw(0.1,0.01,new JSrandom.Lognormal(0,1));
-
-    document.write("TEST Cauchy(0,1)");
-    document.write("<br>");
-    draw(0.1,0.02,new JSrandom.Cauchy(0,1));
-
-
-    document.write("TEST Exponential(3)");
-    document.write("<br>");
-    draw(0.01,0.02,new JSrandom.Exponential(3));
-
-    document.write("TEST Geometric(0.2)");
-    document.write("<br>");
-    draw(0.01,0.002,new JSrandom.Geometric(0.2));
-
-    document.write("TEST Weibull(2,4)");
-    document.write("<br>");
-    draw(0.1,0.02,new JSrandom.Weibull(2,4));
-
-    document.write("TEST Gamma(2,2)");
-    document.write("<br>");
-    draw(0.1,0.02,new JSrandom.Gamma(2,2));
-
-    document.write("TEST Binomial(12,0.5)");
-    document.write("<br>");
-    draw(0.01,0.005,new JSrandom.Binomial(12,0.5));
-
-    document.write("TEST Poisson(4)");
-    document.write("<br>");
-    draw(0.005,0.005,new JSrandom.Poisson(4));
-
-    document.write("TEST Chisquared(3)");
-    document.write("<br>");
-    draw(0.1,0.02,new JSrandom.Chisquared(3));
-
+    
+    log("Test Uniform generator Uniform(0,1)");
+    draw(10,JSrandom.Uniform(0,1));
+    log(repeat('=',80));
+    log("Test Gaussian generator Gaussian(0,1)");
+    draw(4,JSrandom.Gaussian(0,1));
+    log(repeat('=',80));
+    log("Test Lognormal generator Lognormal(0,1)");
+    draw(4,JSrandom.Lognormal(0,1));
+    log(repeat('=',80));
+    log("Test Cauchy generator Cauchy(0,1)");
+    draw(2,JSrandom.Cauchy(0,1));
+    log(repeat('=',80));
+    log("Test Gumbel generator Gumbel(0,1)");
+    draw(4,JSrandom.Gumbel(0,1));
+    log(repeat('=',80));
+    log("Test Logistic generator Logistic(0,1)");
+    draw(4,JSrandom.Logistic(0,1));
+    log(repeat('=',80));
+    log("Test Gamma generator Gamma(2,2)");
+    draw(1,JSrandom.Gamma(2,2));
+    log(repeat('=',80));
+    log("Test Chisquared generator Chisquared(4)");
+    draw(1,JSrandom.Chisquared(4));
+    log(repeat('=',80));
+    log("Test Poisson generator Poisson(4)");
+    draw(1,JSrandom.Poisson(4));
+    log(repeat('=',80));
+    log("Test Exponential generator Exponential(1)");
+    draw(2,JSrandom.Exponential(1));
+    log(repeat('=',80));
+    log("Test Geometric generator Geometric(.5)");
+    draw(1,JSrandom.Geometric(.5));
+    log(repeat('=',80));
+    log("Test Weibull generator Weibull(2,5)");
+    draw(1,JSrandom.Weibull(2,5));
+    log(repeat('=',80));
+    log("Test Rayleigh generator Rayleigh(4)");
+    draw(1,JSrandom.Rayleigh(4));
+    log(repeat('=',80));
+    log("Test Binomial generator Binomial(10,0.5)");
+    draw(1,JSrandom.Binomial(10,0.5));
   </script>
  </body>
 </html>
